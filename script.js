@@ -63,6 +63,9 @@ class Snake {
         for (let i = 0; i < this.body.length; i++) {
             ctx.fillStyle = "#00FF00";
             ctx.fillRect(this.body[i][0], this.body[i][1], this.width, this.width);
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = "#026c45";
+            ctx.strokeRect(this.body[i][0], this.body[i][1], this.width, this.width);
         }
 
     }
@@ -107,7 +110,12 @@ function check_food_eaten(snake, food){
 }
 
 function is_Game_Over(snake){
-    if ((snake.border_colision()) || (snake.body_collision())){
+    if ((snake.border_collision()) || (snake.body_collision())){
+        ctx.font = "40px Arial";
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle'
+        ctx.fillStyle = "yellow";
+        ctx.fillText("Game Over",(Canvas.width / 2), (Canvas.height / 2));
         return true;
     }
     return false;
