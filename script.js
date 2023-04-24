@@ -13,7 +13,7 @@ class Snake {
     
     }
     
-    border_colision(){
+    border_collision(){
         if ((this.headY >= (400 - this.width)) || (this.headY <= 0) || (this.headX <= 0) || (this.headX >= (600 - this.width))) {
             return true;
         } 
@@ -22,16 +22,17 @@ class Snake {
 
     body_collision(){
         for (let i = 1; i < this.body.length; i++) {
-           if ((this.body[i][0] == this.headX) && (this.body[i][1] == this.headY)) {
+           if ((Math.abs(this.body[i][0] - this.headX) <= 5) && (Math.abs(this.body[i][1] - this.headY) <= 5)) {
+                console.log("body colision")
                 return true;
             }
-            return false;
         }
-
+        return false;
     }
 
     extend(){
         this.body.push([(this.body.at(-1)[0] - this.width), this.body.at(-1)[1]])
+        console.log(this.body.at(0), this.body.at(-1))
     }
 
     animate(){
@@ -39,9 +40,6 @@ class Snake {
         for (let i = this.body.length - 1; i > 0; i--) {
             this.body[i][0] = this.body[i-1][0];
             this.body[i][1] = this.body[i-1][1];
-            //this.body[i][1] = this.body[i-1][1];
-            
-            //console.log(i, this.body[i][0], this.body[i][1])
         } 
 
         if (this.direction  == "Right key"){
@@ -63,9 +61,12 @@ class Snake {
 
     draw(){
         for (let i = 0; i < this.body.length; i++) {
-            //console.log(this.body[i][0], this.body[i][1])
             ctx.fillStyle = "#00FF00";
             ctx.fillRect(this.body[i][0], this.body[i][1], this.width, this.width);
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = "#026c45";
+            ctx.strokeRect(this.body[i][0], this.body[i][1], this.width, this.width);
+
         }
 
     }
@@ -76,20 +77,22 @@ class Snake {
 class Food {
     constructor() {
       this.height = 20;
-      this.posX = Math.floor((Math.random() * 29)) * this.height;
-      this.posY = Math.floor((Math.random() * 19)) * this.height;
+      this.X = 0;
+      this.Y = 0;
+      this.reset();
       this.draw();
     }
 
-    // spawn_food(){
-    //     this.posX = Math.floor(Math.random() * (600 - this.height)) + 1;
-    //     this.posY = Math.floor(Math.random() * (400 - this.height)) + 1;
-    //     this.draw();
-    // }
+    reset(){
+        this.X = Math.floor((Math.random() * 29)) * this.height;
+        this.Y = Math.floor((Math.random() * 19)) * this.height;
+        console.log("Amraj")
+        console.log("reset", this.X, this.Y);
+    }
 
     draw(){
         ctx.fillStyle = "#00FFFF";
-        ctx.fillRect(this.posX, this.posY, this.height, this.height);
+        ctx.fillRect(this.X, this.Y, this.height, this.height);
     }
 
 }
@@ -99,7 +102,7 @@ function clear_canvas(){
 }
 
 function check_food_eaten(snake, food){
-    if ((Math.abs(snake.headX - food.posX) <= 5) && (Math.abs(snake.headY - food.posY) <= 5)){
+    if ((Math.abs(snake.headX - food.X) <= 5) && (Math.abs(snake.headY - food.Y) <= 5)){
         console.log("extended");
         return true;
     } 
@@ -108,7 +111,15 @@ function check_food_eaten(snake, food){
 }
 
 function is_Game_Over(snake){
-    if ((snake.border_colision()) || (snake.body_collision())){
+    
+    if ((snake.border_collision()) || (snake.body_collision())){
+
+        ctx.font = "40px Arial";
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle'
+        ctx.fillStyle = "yellow";
+        ctx.fillText("Game Over",(Canvas.width / 2), (Canvas.height / 2));
+
         return true;
     }
     return false;
@@ -118,7 +129,6 @@ function run_Game() {
     const snake = new Snake(100, 100);
     snake.draw()
     const food = new Food();
-    //food.spawn_food();
 
     var ID;
 
@@ -148,7 +158,7 @@ function run_Game() {
 
         if (check_food_eaten(snake, food)){
             snake.extend()
-            const food = new Food();
+            food.reset()
         }
 
         clear_canvas()
@@ -159,12 +169,6 @@ function run_Game() {
             clearInterval(ID);
         }
 
-
-        //     ID = requestAnimationFrame(game_loop);
-        
-        // } else{
-        //     cancelAnimationFrame(ID);
-        // }
     }
 }
 
