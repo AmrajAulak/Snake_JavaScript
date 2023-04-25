@@ -127,6 +127,7 @@ function run_Game() {
     const food = new Food();
 
     var ID;
+    var score = 0
 
     document.addEventListener("keydown", function(event) {
 
@@ -155,6 +156,8 @@ function run_Game() {
         if (check_food_eaten(snake, food)){
             snake.extend()
             food.reset()
+            score ++;
+            document.getElementById("score").innerText = "Score: " + score;
         }
 
         clear_canvas()
@@ -169,6 +172,8 @@ function run_Game() {
 }
 
 run_Game()
+
+//Include in last commit
 
 
     
